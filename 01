@@ -1,0 +1,34 @@
+CREATE TABLE Produtos (
+    ProdutoID INT PRIMARY KEY,
+    NomeProduto VARCHAR(255),
+    Preco DECIMAL(10, 2),
+    Estoque INT
+);
+CREATE TABLE Clientes (
+    ClienteID INT PRIMARY KEY,
+    NomeCliente VARCHAR(255),
+    Email VARCHAR(255),
+    Telefone VARCHAR(20)
+);
+CREATE TABLE Pedidos (
+    PedidoID INT PRIMARY KEY,
+    DataPedido DATE,
+    ClienteID INT,
+    Total DECIMAL(10, 2),
+    FOREIGN KEY (ClienteID) REFERENCES Clientes(ClienteID)
+);
+DELIMITER //
+CREATE TRIGGER AtualizarEstoqueAposPedido
+AFTER INSERT ON Pedidos
+FOR EACH ROW
+BEGIN
+    DECLARE ProdutoEstoque INT;
+    DECLARE PedidoProdutoID INT;
+    DECLARE PedidoQuantidade INT;
+    SELECT NEW.ProdutoID, NEW.Quantidade INTO PedidoProdutoID, PedidoQuantidade FROM Pedidos WHERE PedidoID = NEW.PedidoID;
+    SELECT Estoque INTO ProdutoEstoque FROM Produtos WHERE ProdutoID = PedidoProdutoID;
+    UPDATE Produtos SET Estoque = ProdutoEstoque - PedidoQuantidade WHERE ProdutoID = PedidoProdutoID;
+END;
+DELIMITER ;
+INSERT INTO Pedidos (PedidoID, DataPedido, ClienteID, Total) VALUES (1, '2021-04-07', 1, 50);
+SELECT * FROM Produtos;
