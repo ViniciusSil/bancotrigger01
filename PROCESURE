@@ -1,0 +1,8 @@
+DELIMITER $$
+CREATE PROCEDURE comprasdodia()
+BEGIN
+	SELECT datacompra, COUNT(*) as quantidade FROM produtos
+	GROUP BY
+		datacompra;
+END;
+DELIMITER;
