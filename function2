@@ -1,0 +1,9 @@
+CREATE FUNCTION contar_clientes_por_dia(data_cadastro_parametro DATE)
+RETURNS INT
+BEGIN
+    DECLARE total_clientes INT;
+    SELECT COUNT(*) INTO total_clientes
+    FROM tabela_clientes
+    WHERE data_cadastro = data_cadastro_parametro;
+    RETURN total_clientes;
+END;
